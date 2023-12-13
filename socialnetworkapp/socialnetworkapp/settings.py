@@ -35,8 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'socialnetworks.apps.SocialnetworksConfig'
+    'socialnetworks.apps.SocialnetworksConfig',
+    'ckeditor',
+    'ckeditor_uploader',
+    "debug_toolbar",
 ]
+
+CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 import pymysql
 
@@ -83,6 +89,14 @@ DATABASES = {
         'HOST': ''  # mặc định localhost
     }
 }
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
+CKEDITOR_UPLOAD_PATH = "ckeditors/images/"
 
 MEDIA_ROOT = '%s/socialnetworks/static/' % BASE_DIR
 
