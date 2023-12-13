@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     "debug_toolbar",
+    'rest_framework',
+    'drf_yasg'
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
@@ -85,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'socialdb',
         'USER': 'root',
-        'PASSWORD': '123456@Vi',
+        'PASSWORD': 'an01697769522',
         'HOST': ''  # mặc định localhost
     }
 }
