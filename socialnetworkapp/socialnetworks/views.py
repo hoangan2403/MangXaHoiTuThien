@@ -31,6 +31,12 @@ class PostViewSet(viewsets.ViewSet, generics.ListAPIView):
         return Response(serializers.CommentSerializer(comments, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=True)
+    def likes(self, request, pk):
+        likes = self.get_object().like_set.all()
+        return Response(serializers.LikeSerializers(likes, many=True, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
 class AuctionViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Auction.objects.all();
     serializer_class = serializers.AuctionSerializer
