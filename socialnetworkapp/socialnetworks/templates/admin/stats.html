@@ -1,0 +1,90 @@
+{% extends 'admin/base_site.html' %}
+{% block content %}
+<h1>Thống kê số lượt like và số lượt comment</h1>
+<ul>
+    {% for c in stats %}
+    <li><strong>{{ c.name }}</strong>: {{c.count1}}</li>
+    {% endfor %}
+</ul>
+<div style="display: flex; posi">
+    <div style="width: 800px; border: 1px solid; padding: 40px;">
+        <canvas id="ChartLike"></canvas>
+    </div>
+    <div style="width: 800px; ">
+        <canvas id="ChartCmm" width="500px"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let labels1 = [];
+    let values1 = [];
+    {% for c in stats_cmm %}
+    values1.push({{ c.count2 }})
+    labels1.push('{{ c.name }}')
+    {% endfor %}
+
+    let labels = [];
+    let values = [];
+    {% for c in stats %}
+    values.push({{ c.count1 }})
+    labels.push('{{ c.name }}')
+    {% endfor %}
+
+    window.onload = () => {
+        const ctxLike = document.getElementById('ChartLike');
+
+
+      new Chart(ctxLike, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "",
+            data: values,
+            borderWidth: 1,
+            backgroundColor: [
+              'rgb(255, 99, 132)',
+              'rgb(54, 162, 235)',
+              'rgb(255, 205, 86)'
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+        const ctxCmm = document.getElementById('ChartCmm');
+
+
+        new Chart(ctxCmm, {
+            type: 'bar',
+            data: {
+              labels: labels1,
+              datasets: [{
+                label: "",
+                data: values1,
+                borderWidth: 1,
+                backgroundColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(54, 162, 235)',
+                  'rgb(255, 205, 86)'
+                ]
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        }
+</script>
+
+{% endblock %}

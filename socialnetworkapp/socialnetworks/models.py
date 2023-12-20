@@ -5,22 +5,31 @@ from ckeditor.fields import RichTextField
 # Create your models here.
 
 
+class BaseModel(models.Model):
+    created_date = models.DateField(auto_now_add=True, null=True)
+    updated_date = models.DateField(auto_now=True, null=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+
 class User(AbstractUser):
     avatar = models.ImageField("users/%Y/%m", null=True)
 
 
-class Category(models.Model):
+class Category(BaseModel):
     name = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return self.name
 
 
-class Product(models.Model):
+class Product(BaseModel):
     name = models.CharField(max_length=100, null=False)
     description = RichTextField(null=True)
     image = models.ImageField(upload_to="products/%Y/%m")
-    category = models.ForeignKey(Category, on_delete=models.RESTRICT)
+    category = models.ForeignKey(Category, on_delete=models.RESTRICT, related_query_name='product')
 
     def __str__(self):
         return self.name
@@ -35,57 +44,50 @@ class Auction(models.Model):
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
     owner = models.ForeignKey(User, related_name='user_of', on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, related_name='user',on_delete=models.CASCADE)
+    user_care = models.ManyToManyField(User, related_query_name='auction')
 
 
-class ParticipateAuction(models.Model):
+class ParticipateAuction(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
+    auction = models.ForeignKey(Auction, on_delete=models.CASCADE, related_query_name="participateauction")
     price = models.FloatField(null=True)
-    join_date = models.DateField(auto_now_add=True, null=True)
 
 
-class Post(models.Model):
+class Post(BaseModel):
     content = RichTextField(null=True)
     image = models.ImageField(upload_to="posts/%Y/%m")
-    created_date = models.DateField(auto_now_add=True, null=True)
-    updated_date = models.DateField(auto_now=True, null=True)
-    active = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post_hashtag = models.ManyToManyField('Hashtag')
 
 
-class ReportType(models.Model):
+class ReportType(BaseModel):
     content = RichTextField(null=True)
 
     def __str__(self):
         return self.content
 
 
-class Report(models.Model):
+class Report(BaseModel):
     reason = RichTextField(null=True)
-    created_date = models.DateField(auto_now_add=True, null=True)
-    active = models.BooleanField(default=True)
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete= models.CASCADE)
     report_type = models.ForeignKey(ReportType, on_delete=models.CASCADE)
 
 
-class Notice(models.Model):
+class Notice(BaseModel):
     content = RichTextField(null=True)
-    created_date = models.DateField(auto_now=True, null=True)
-    active = models.BooleanField(default=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
-class Hashtag(models.Model):
+class Hashtag(BaseModel):
     name = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return self.name
 
 
-class LikeType(models.Model):
+class LikeType(BaseModel):
     name = models.CharField(max_length=100, null=False)
     icon = models.CharField(max_length=100, null=False)
 
@@ -93,15 +95,14 @@ class LikeType(models.Model):
         return self.name
 
 
-class Like(models.Model):
+class Like(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     like_type = models.ForeignKey(LikeType, on_delete=models.CASCADE)
 
 
-class Comments(models.Model):
+class Comments(BaseModel):
     content = RichTextField(null=True)
-    created_date = models.DateField(auto_now_add=True, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey('Comments', on_delete=models.CASCADE)
