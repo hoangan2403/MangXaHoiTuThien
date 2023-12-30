@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
 
 class User(AbstractUser):
-    avatar = models.ImageField("users/%Y/%m", null=True)
+    avatar = CloudinaryField('avatar', null=True)
 
 
 class Category(models.Model):

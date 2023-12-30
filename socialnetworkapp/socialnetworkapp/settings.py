@@ -40,8 +40,24 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     "debug_toolbar",
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'oauth2_provider',
+    'cloudinary',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name="dhcvsbuew",
+    api_key="127245518483839",
+    api_secret="1CExekjHALzqnQGG7Hr-FoOWlk8"
+)
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 

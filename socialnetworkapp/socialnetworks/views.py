@@ -1,8 +1,8 @@
 
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, permissions, parsers
 from rest_framework.response import Response
 
-from socialnetworks.models import Post, Auction
+from socialnetworks.models import Post, Auction, User
 from socialnetworks import serializers, paginators
 from rest_framework.decorators import action
 
@@ -41,3 +41,19 @@ class AuctionViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Auction.objects.all();
     serializer_class = serializers.AuctionSerializer
     # pagination_class = paginators.PostPaginator
+
+
+class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = User.objects.filter(is_active=True).all()
+    serializer_class = serializers.UserSerialzier
+    parser_classes = [parsers.MultiPartParser]
+
+    def get_permissions(self):
+        if self.action.__eq__('current_user'):
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
+
+    @action(methods=['get'], url_name='current-user', detail=False)
+    def current_user(self, request):
+        return Response(serializers.UserSerialzier(request.user).data)

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.urls import path, re_path, include
 from django.contrib import admin
+from oauth2_provider.views import AuthorizationView, TokenView
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -34,6 +35,7 @@ schema_view = get_schema_view(
 )
 urlpatterns = [
     path('', include('socialnetworks.urls')),
+    path('auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('admin/', admin.site.urls),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
