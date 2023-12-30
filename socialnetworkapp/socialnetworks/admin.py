@@ -17,9 +17,17 @@ class SocialNetworkAppAdminSite(admin.AdminSite):
                ] + super().get_urls()
 
     def stats_view(self, request):
+        year = request.GET.get('year')
+        month = request.GET.get('month')
+
+        stats_like = dao.count_LikeAuction_By_CateOfProduct(year, month)
+        stats_cmm = dao.count_CmmAuction_By_CateOfProduct(year, month)
+        stats_auction = dao.count_Auction_By_CateOfProduct(year, month)
+
         return TemplateResponse(request, 'admin/stats.html', {
-            'stats': dao.count_Auction_By_CateOfProduct(),
-            'stats_Cmm': dao.count_CmmAuction_By_CateOfProduct()
+            'stats_Like': stats_like,
+            'stats_Cmm': stats_cmm,
+            'stats_Auction': stats_auction
         })
 
 
@@ -57,11 +65,15 @@ class ProductAdmin(admin.ModelAdmin):
         }
 
 
+class AuctionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'owner', 'product', 'start_date', 'end_date']
+
+
 # Register your models here.
 admin_site.register(Category, CategoryAdmin)
 admin_site.register(Product, ProductAdmin)
 admin_site.register(User)
-admin_site.register(Auction)
+admin_site.register(Auction, AuctionAdmin)
 admin_site.register(Post)
 admin_site.register(LikeType)
 admin_site.register(Report)
